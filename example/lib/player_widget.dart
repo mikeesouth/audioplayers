@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers_example/one_time_audio_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 enum PlayerState { stopped, playing, paused }
 enum PlayingRouteState { speakers, earpiece }
@@ -76,6 +78,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
+              key: Key('play_button_2000_times'),
+              onPressed: _isPlaying ? null : () => _play(repeat: 2000),
+              iconSize: 64.0,
+              icon: Icon(Icons.play_arrow),
+              color: Colors.red,
+            ),
+            IconButton(
               key: Key('play_button'),
               onPressed: _isPlaying ? null : () => _play(),
               iconSize: 64.0,
@@ -132,7 +141,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             Text(
               _position != null
                   ? '${_positionText ?? ''} / ${_durationText ?? ''}'
-                  : _duration != null ? _durationText : '',
+                  : _duration != null
+                      ? _durationText
+                      : '',
               style: TextStyle(fontSize: 24.0),
             ),
           ],
@@ -211,7 +222,14 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     _playingRouteState = PlayingRouteState.speakers;
   }
 
-  Future<int> _play() async {
+  Future<int> _play({int repeat = 1}) async {
+    if (repeat > 1) {
+      for (int i = 0; i < repeat; i++) {
+        print('lapCount = ${i + 1}');
+        await OneTimeAudioPlayer().playAndWait();
+      }
+      return 1;
+    }
     final playPosition = (_position != null &&
             _duration != null &&
             _position.inMilliseconds > 0 &&
