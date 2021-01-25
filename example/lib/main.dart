@@ -109,12 +109,20 @@ class _ExampleAppState extends State<ExampleApp> {
         Text('Loop Local Asset \'audio.mp3\':'),
         _Btn(txt: 'Loop', onPressed: () => audioCache.loop('audio.mp3')),
         Text('Play Local Asset \'audio2.mp3\':'),
-        _Btn(txt: 'Play', onPressed: () => audioCache.play('audio2.mp3')),
+        _Btn(
+            txt: 'Play (2000 times)',
+            onPressed: () => audioCache.play('audio2.mp3')),
         Text('Play Local Asset In Low Latency \'audio.mp3\':'),
         _Btn(
             txt: 'Play',
-            onPressed: () =>
-                audioCache.play('audio.mp3', mode: PlayerMode.LOW_LATENCY)),
+            onPressed: () async {
+              for (int i = 1; i < 2000; i++) {
+                print('lapCount = $i');
+                audioCache.play('audio.mp3', mode: PlayerMode.LOW_LATENCY);
+                await Future.delayed(Duration(milliseconds: 50));
+                // await Future.delayed(Duration(seconds: 3));
+              }
+            }),
         Text('Play Local Asset Concurrently In Low Latency \'audio.mp3\':'),
         _Btn(
             txt: 'Play',
