@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:flutter/services.dart';
+// import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/src/foundation/constants.dart';
@@ -48,16 +49,24 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 
   Future _loadFile() async {
-    final bytes = await readBytes(kUrl1);
+    // final bytes = await readBytes(kUrl1);
+    final data = await rootBundle.load('assets/audio.mp3');
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/audio.mp3');
 
-    await file.writeAsBytes(bytes);
+    await writeToFile(file, data);
     if (await file.exists()) {
       setState(() {
         localFilePath = file.path;
       });
     }
+  }
+
+  void writeToFile(File file, ByteData data) {
+    final buffer = data.buffer;
+    file.writeAsBytes(
+      buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+    );
   }
 
   Widget remoteUrl() {
