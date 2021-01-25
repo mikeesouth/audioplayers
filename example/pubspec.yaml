@@ -23,8 +23,7 @@ flutter:
     - assets/audio.mp3
     - assets/audio2.mp3
     - assets/messenger.mp3
-    - assets/B_sound.mp3
-    - assets/pop.mp3
+    - assets/test.mp3
 
 environment:
   sdk: ">=2.0.0-dev.50.0 <3.0.0"

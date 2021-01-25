@@ -8,47 +8,28 @@ import 'package:path_provider/path_provider.dart';
 class OneTimeAudioPlayer {
   static int _filenameCounter = 0;
 
-  Duration _currentPosition = Duration.zero;
-  final _audioPlayer = AudioPlayer();
+  final _audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   final _completer = Completer();
   File _file;
+  Duration _currentPosition = Duration.zero;
 
   OneTimeAudioPlayer() {
     if (Platform.isIOS) {
-      // _audioPlayer.startHeadlessService();
+      // Not sure if this is needed but it is set in the example code
+      _audioPlayer.startHeadlessService();
     }
 
     _audioPlayer.onPlayerStateChanged.listen((s) async {
       if (s == AudioPlayerState.COMPLETED) {
-        print('deleting _file.path = ${_file.path}');
+        print('Deleting _file.path = ${_file.path}');
         await _file.delete();
         _completer.complete();
       }
     });
 
-    _audioPlayer.onPlayerError.listen((s) {
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-      print('ERROR!  $s');
-      print('ERROR!! $s');
-    });
-
-    _audioPlayer.onAudioPositionChanged.listen((Duration p) {
-      _currentPosition = p;
+    _audioPlayer.onPlayerError.listen((s) async {
+      print('onPlayerError: $s');
+      print('await _file.exists() = ${await _file.exists()}');
     });
   }
 
@@ -59,27 +40,27 @@ class OneTimeAudioPlayer {
   Future<void> playAndWait() async {
     _currentPosition = Duration.zero;
 
-    final ext = 'mp3';
-    final data = await rootBundle.load('assets/B_sound.mp3');
+    final data = await rootBundle.load('assets/test.mp3');
+    _file = await _writeTempFile(data, 'mp3');
 
-    _file = await _writeTempFile(data, ext);
-
-    print('playing _file.path = ${_file.path}');
+    print('Paying _file.path = ${_file.path}');
     if (!await _file.exists()) {
-      throw new Exception('FILE DOES NOT EXIST!');
+      // This does not happen on iOS when we get AVPlayerStatus.Item.Failed
+      throw new Exception('File does not exist');
     }
     try {
       await _audioPlayer.play(_file.path, isLocal: true);
     } on PlatformException catch (e) {
+      // This does not happen on iOS when we get AVPlayerStatus.Item.Failed
       print('Got PlatformException: $e');
-      // await _audioPlayer.play(_file.path, isLocal: true);
-      // rethrow;
     } catch (e) {
+      // This does not happen on iOS when we get AVPlayerStatus.Item.Failed
       print('Got exception: $e');
     }
 
-    // await Future.delayed(Duration(milliseconds: 50));
-    return _completer.future;
+    // Return completer future instead of 50ms delay to play sound in sequence.
+    await Future.delayed(Duration(milliseconds: 50));
+    // return _completer.future;
   }
 
   Future<void> stopAudio() async {
@@ -89,9 +70,8 @@ class OneTimeAudioPlayer {
 
   Future<File> _writeTempFile(ByteData data, String ext) async {
     final tempDir = await getTemporaryDirectory();
-    final unique = _filenameCounter++;
-    final file = File('${tempDir.path}/speech-$unique.$ext');
-    // await file.writeAsBytes(data, flush: true);
+    final unique = ++_filenameCounter;
+    final file = File('${tempDir.path}/sound-$unique.$ext');
     await writeToFile(file, data);
 
     return file;

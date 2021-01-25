@@ -78,7 +78,21 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           children: [
             IconButton(
               key: Key('play_button_2000_times'),
-              onPressed: _isPlaying ? null : () => _play(repeat: 2000),
+              onPressed: _isPlaying
+                  ? null
+                  : () async {
+                      setState(() => _playerState = PlayerState.playing);
+                      for (int i = 1; i <= 2000; i++) {
+                        // Play a short sound 2000 times with unique filenames.
+                        // This takes about 10.5 minutes on my test device. This
+                        // works perfectly fine on physical Android devices,
+                        // emulators and simulators but it does not work on
+                        // physical iOS devices. It crashes after ~700-750 runs
+                        // with AVPlayerItemStatus.failed.
+                        print('lapCount = $i');
+                        await OneTimeAudioPlayer().playAndWait();
+                      }
+                    },
               iconSize: 64.0,
               icon: Icon(Icons.play_arrow),
               color: Colors.red,
@@ -221,14 +235,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     _playingRouteState = PlayingRouteState.speakers;
   }
 
-  Future<int> _play({int repeat = 1}) async {
-    if (repeat > 1) {
-      for (int i = 0; i < repeat; i++) {
-        print('lapCount = ${i + 1}');
-        await OneTimeAudioPlayer().playAndWait();
-      }
-      return 1;
-    }
+  Future<int> _play() async {
     final playPosition = (_position != null &&
             _duration != null &&
             _position.inMilliseconds > 0 &&
