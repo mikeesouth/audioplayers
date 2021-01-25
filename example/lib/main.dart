@@ -62,10 +62,11 @@ class _ExampleAppState extends State<ExampleApp> {
     }
   }
 
-  void writeToFile(File file, ByteData data) {
+  Future<void> writeToFile(File file, ByteData data) async {
     final buffer = data.buffer;
-    file.writeAsBytes(
+    await file.writeAsBytes(
       buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+      flush: true,
     );
   }
 

@@ -14,6 +14,10 @@ class OneTimeAudioPlayer {
   File _file;
 
   OneTimeAudioPlayer() {
+    if (Platform.isIOS) {
+      // _audioPlayer.startHeadlessService();
+    }
+
     _audioPlayer.onPlayerStateChanged.listen((s) async {
       if (s == AudioPlayerState.COMPLETED) {
         print('deleting _file.path = ${_file.path}');
@@ -56,13 +60,23 @@ class OneTimeAudioPlayer {
     _currentPosition = Duration.zero;
 
     final ext = 'mp3';
-    final data = await rootBundle.load('assets/pop.mp3');
+    final data = await rootBundle.load('assets/B_sound.mp3');
 
     _file = await _writeTempFile(data, ext);
 
     print('playing _file.path = ${_file.path}');
-    await _file.exists(); // Make sure that the file write is completed
-    await _audioPlayer.play(_file.path, isLocal: true);
+    if (!await _file.exists()) {
+      throw new Exception('FILE DOES NOT EXIST!');
+    }
+    try {
+      await _audioPlayer.play(_file.path, isLocal: true);
+    } on PlatformException catch (e) {
+      print('Got PlatformException: $e');
+      // await _audioPlayer.play(_file.path, isLocal: true);
+      // rethrow;
+    } catch (e) {
+      print('Got exception: $e');
+    }
 
     // await Future.delayed(Duration(milliseconds: 50));
     return _completer.future;
@@ -83,10 +97,11 @@ class OneTimeAudioPlayer {
     return file;
   }
 
-  void writeToFile(File file, ByteData data) {
+  Future<void> writeToFile(File file, ByteData data) async {
     final buffer = data.buffer;
-    file.writeAsBytes(
+    await file.writeAsBytes(
       buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+      flush: true,
     );
   }
 
