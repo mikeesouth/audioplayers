@@ -43,7 +43,7 @@ class OneTimeAudioPlayer {
     final data = await rootBundle.load('assets/test.mp3');
     _file = await _writeTempFile(data, 'mp3');
 
-    print('Paying _file.path = ${_file.path}');
+    print('Playing _file.path = ${_file.path}');
     if (!await _file.exists()) {
       // This does not happen on iOS when we get AVPlayerStatus.Item.Failed
       throw new Exception('File does not exist');

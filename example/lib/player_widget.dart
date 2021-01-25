@@ -84,7 +84,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                       setState(() => _playerState = PlayerState.playing);
                       for (int i = 1; i <= 2000; i++) {
                         // Play a short sound 2000 times with unique filenames.
-                        // This takes about 10.5 minutes on my test device. This
+                        // This takes about 2.2 minutes on my test device. This
                         // works perfectly fine on physical Android devices,
                         // emulators and simulators but it does not work on
                         // physical iOS devices. It crashes after ~700-750 runs
@@ -92,6 +92,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         print('lapCount = $i');
                         await OneTimeAudioPlayer().playAndWait();
                       }
+                      setState(() => _playerState = PlayerState.stopped);
                     },
               iconSize: 64.0,
               icon: Icon(Icons.play_arrow),
