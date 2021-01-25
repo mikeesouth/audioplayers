@@ -23,28 +23,24 @@ class OneTimeAudioPlayer {
     });
 
     _audioPlayer.onPlayerError.listen((s) {
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
-      print('ERROR!');
-      print('ERROR!!');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
+      print('ERROR!  $s');
+      print('ERROR!! $s');
     });
 
     _audioPlayer.onAudioPositionChanged.listen((Duration p) {

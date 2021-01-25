@@ -125,6 +125,12 @@ class _ExampleAppState extends State<ExampleApp> {
             onPressed: () async {
               for (int i = 1; i < 2000; i++) {
                 print('lapCount = $i');
+                final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+                ap.onPlayerError.listen((event) {
+                  print('ERROR! $event');
+                });
+
+                audioCache.fixedPlayer = ap;
                 audioCache.play('audio.mp3', mode: PlayerMode.LOW_LATENCY);
                 await Future.delayed(Duration(milliseconds: 50));
                 // await Future.delayed(Duration(seconds: 3));
