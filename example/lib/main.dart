@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-// import 'package:http/http.dart';
+import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/src/foundation/constants.dart';
@@ -49,25 +48,16 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 
   Future _loadFile() async {
-    // final bytes = await readBytes(kUrl1);
-    final data = await rootBundle.load('assets/audio.mp3');
+    final bytes = await readBytes(kUrl1);
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/audio.mp3');
 
-    await writeToFile(file, data);
+    await file.writeAsBytes(bytes);
     if (await file.exists()) {
       setState(() {
         localFilePath = file.path;
       });
     }
-  }
-
-  Future<void> writeToFile(File file, ByteData data) async {
-    final buffer = data.buffer;
-    await file.writeAsBytes(
-      buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-      flush: true,
-    );
   }
 
   Widget remoteUrl() {
@@ -122,26 +112,9 @@ class _ExampleAppState extends State<ExampleApp> {
         _Btn(txt: 'Play', onPressed: () => audioCache.play('audio2.mp3')),
         Text('Play Local Asset In Low Latency \'audio.mp3\':'),
         _Btn(
-            txt: 'Play (2000 times)',
-            onPressed: () async {
-              for (int i = 1; i <= 2000; i++) {
-                print('lapCount = $i');
-                final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-                ap.onPlayerError.listen((s) {
-                  print('ERROR! $s');
-                  throw new Exception(
-                      'ERROR during audio cache play, lapCount = $i, errorMessage = $s');
-                });
-                ap.onPlayerStateChanged.listen((s) {
-                  print('State change => $s');
-                });
-
-                audioCache.fixedPlayer = ap;
-                audioCache.play('audio.mp3');
-                await Future.delayed(Duration(milliseconds: 50));
-                // await Future.delayed(Duration(seconds: 3));
-              }
-            }),
+            txt: 'Play',
+            onPressed: () =>
+                audioCache.play('audio.mp3', mode: PlayerMode.LOW_LATENCY)),
         Text('Play Local Asset Concurrently In Low Latency \'audio.mp3\':'),
         _Btn(
             txt: 'Play',
