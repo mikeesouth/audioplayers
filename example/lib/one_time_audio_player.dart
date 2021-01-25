@@ -30,6 +30,8 @@ class OneTimeAudioPlayer {
     _audioPlayer.onPlayerError.listen((s) async {
       print('onPlayerError: $s');
       print('await _file.exists() = ${await _file.exists()}');
+      await _file.delete();
+      _completer.complete();
     });
   }
 
@@ -86,7 +88,6 @@ class OneTimeAudioPlayer {
   }
 
   Future<void> dispose() async {
-    await _completer.future;
     await _audioPlayer.dispose();
   }
 }
