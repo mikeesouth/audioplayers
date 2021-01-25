@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers_example/one_time_audio_player.dart';
+import 'package:audioplayers_example/one_time_audio_player2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +91,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         // physical iOS devices. It crashes after ~700-750 runs
                         // with AVPlayerItemStatus.failed.
                         print('lapCount = $i');
-                        await OneTimeAudioPlayer().playAndWait();
+                        await OneTimeAudioPlayer2().playAndWait();
                       }
                       setState(() => _playerState = PlayerState.stopped);
                     },

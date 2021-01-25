@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 class OneTimeAudioPlayer {
   static int _filenameCounter = 0;
 
-  final _audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  final _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   final _completer = Completer();
   File _file;
   Duration _currentPosition = Duration.zero;
@@ -61,8 +61,8 @@ class OneTimeAudioPlayer {
     }
 
     // Return completer future instead of 50ms delay to play sound in sequence.
-    await Future.delayed(Duration(milliseconds: 50));
-    // return _completer.future;
+    // await Future.delayed(Duration(milliseconds: 50));
+    return _completer.future;
   }
 
   Future<void> stopAudio() async {
