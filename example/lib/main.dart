@@ -123,15 +123,20 @@ class _ExampleAppState extends State<ExampleApp> {
         _Btn(
             txt: 'Play (2000 times)',
             onPressed: () async {
-              for (int i = 1; i < 2000; i++) {
+              for (int i = 1; i <= 2000; i++) {
                 print('lapCount = $i');
                 final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-                ap.onPlayerError.listen((event) {
-                  print('ERROR! $event');
+                ap.onPlayerError.listen((s) {
+                  print('ERROR! $s');
+                  throw new Exception(
+                      'ERROR during audio cache play, lapCount = $i, errorMessage = $s');
+                });
+                ap.onPlayerStateChanged.listen((s) {
+                  print('State change => $s');
                 });
 
                 audioCache.fixedPlayer = ap;
-                audioCache.play('audio.mp3', mode: PlayerMode.LOW_LATENCY);
+                audioCache.play('audio.mp3');
                 await Future.delayed(Duration(milliseconds: 50));
                 // await Future.delayed(Duration(seconds: 3));
               }

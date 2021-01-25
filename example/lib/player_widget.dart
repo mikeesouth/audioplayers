@@ -4,7 +4,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers_example/one_time_audio_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 enum PlayerState { stopped, playing, paused }
 enum PlayingRouteState { speakers, earpiece }

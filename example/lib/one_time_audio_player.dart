@@ -56,14 +56,13 @@ class OneTimeAudioPlayer {
     _currentPosition = Duration.zero;
 
     final ext = 'mp3';
-    final data = await rootBundle.load('assets/B_sound.mp3');
+    final data = await rootBundle.load('assets/pop.mp3');
 
     _file = await _writeTempFile(data, ext);
 
-    try {
-      print('playing _file.path = ${_file.path}');
-      await _audioPlayer.play(_file.path, isLocal: true);
-    } finally {}
+    print('playing _file.path = ${_file.path}');
+    await _file.exists(); // Make sure that the file write is completed
+    await _audioPlayer.play(_file.path, isLocal: true);
 
     // await Future.delayed(Duration(milliseconds: 50));
     return _completer.future;
